@@ -27,7 +27,7 @@ const RATE_LIMIT_WINDOW = 24 * 60 * 60 * 1000;
 const MAX_REQUESTS_PER_WINDOW = 2;
 const CONNECTION_TIMEOUT = 180000;
 const MAX_RETRIES = 2;
-const PING_INTERVAL = 14 * 60 * 1000;
+const PING_INTERVAL = 10 * 60 * 1000;
 const CLEANUP_INTERVAL = 3 * 60 * 1000;
 const REQUEST_TIMEOUT = 3 * 60 * 1000;
 const REQUIRED_CHANNEL = '@firekid_ios';
@@ -1310,6 +1310,11 @@ async function startBot() {
             console.log(`🌐 Server running on port ${PORT}`);
         });
 
+        console.log('🔄 Starting self-ping and cleanup...');
+        selfPing();
+        startCleanupScheduler();
+        console.log('✅ Self-ping and cleanup started');
+
         await bot.launch();
         console.log('✅ Bot started successfully');
         console.log('📱 Using Baileys with macOS Chrome browser');
@@ -1318,9 +1323,6 @@ async function startBot() {
         console.log('🔄 Max retries: 2');
         console.log('⏰ Timeout: 3 minutes');
         console.log('🧹 Cleanup interval: 3 minutes');
-
-        selfPing();
-        startCleanupScheduler();
 
         process.once('SIGINT', () => {
             server.close();
